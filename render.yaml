@@ -34,6 +34,8 @@ services:
           property: url
       - key: N8N_METRICS
         value: "true"
+      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+        value: "true"
       - key: NODE_ENV
         value: "production"
     disk:
