@@ -7,7 +7,7 @@ USER root
 RUN mkdir -p /home/node/.n8n/workflows
 
 # Copy the workflow file into the container (no spaces in filename)
-COPY Google_Drive_Archive_Old_Files.json /home/node/.n8n/workflows/
+COPY workflows/Google_Drive_Archive_Old_Files.json /home/node/.n8n/workflows/
 
 USER node
 
