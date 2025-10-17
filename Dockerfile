@@ -17,4 +17,4 @@ ENV N8N_BASIC_AUTH_ACTIVE=true
 ENV N8N_BASIC_AUTH_USER=admin
 ENV N8N_BASIC_AUTH_PASSWORD=goodness2018
 
-CMD ["n8n", "start"]
+CMD ["/usr/local/bin/n8n", "start"]
