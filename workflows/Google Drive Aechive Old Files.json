@@ -1,0 +1,202 @@
+{
+  "name": "Google Drive Aechive Old Files",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -992,
+        -240
+      ],
+      "id": "7bfd71ac-f64e-42ab-b97c-340fb1298bff",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='1CunvqtX26IkyN8JhzkLMaYwk50OeqW3B' in parents and trashed = false and modifiedTime < '{{ $now.minus(1, \"minute\").toISO() }}' and (name contains '.pdf' or name contains '.docx' or name contains '.pptx')",
+        "returnAll": true,
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "value": "My Drive",
+            "mode": "list",
+            "cachedResultName": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -816,
+        -80
+      ],
+      "id": "739991e0-7d14-45ff-8059-b0be54bc4d61",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "o20NbZb6Ai0EM15q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1dPXxExzQGhH86FliGbZBeM3kukvlj1_N",
+          "mode": "list",
+          "cachedResultName": "Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1dPXxExzQGhH86FliGbZBeM3kukvlj1_N"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -224,
+        -256
+      ],
+      "id": "6fe27094-1063-4438-8e4b-a5c420768fad",
+      "name": "Move file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "o20NbZb6Ai0EM15q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data",
+          "googleFileConversion": {
+            "conversion": {
+              "docsToFormat": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "drawingsToFormat": "application/pdf",
+              "sheetsToFormat": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -608,
+        -80
+      ],
+      "id": "0fbb1d34-06fc-4bb3-997c-f2295373252c",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "o20NbZb6Ai0EM15q",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "compress",
+        "fileName": "={{ $json.name }}",
+        "binaryPropertyOutput": "=data"
+      },
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "b9f9599f-6f26-4202-9a27-662adc2736bd",
+      "name": "Compression"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Compression",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compression": {
+      "main": [
+        [
+          {
+            "node": "Move file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dc8a6cf8-f32b-4b46-99ba-20edd58b6fbe",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "fa395f52eb5e70a6513af55c04bee34ba11c3066d89338224e8e97f90a326e25"
+  },
+  "id": "Q67so5NtNckI3Vxo",
+  "tags": []
+}
